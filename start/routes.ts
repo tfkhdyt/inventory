@@ -7,6 +7,7 @@
 |
 */
 
+const UsersController = () => import('#controllers/users_controller')
 import router from '@adonisjs/core/services/router'
 
 router.get('/', async () => {
@@ -15,12 +16,8 @@ router.get('/', async () => {
   }
 })
 
-router.get('/movies', async () => {})
-router.get('/movies/:slug', async (ctx) => {
-  const { slug } = ctx.params
-
-  return `Movie slug is ${slug}`
-})
-router.post('/movies', async () => {})
-router.put('/movies/:id', async () => {})
-router.delete('/movies/:id', async () => {})
+router
+  .group(() => {
+    router.post('/register', [UsersController, 'register'])
+  })
+  .prefix('/auth')
