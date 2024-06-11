@@ -1,0 +1,21 @@
+meta {
+  name: Store
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3333/items
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "sku": "KONZ-002",
+    "name": "AK-47",
+    "description": "tembakan, dor dor",
+    "unit": "pcs",
+    "quantity": 5
+  }
+}

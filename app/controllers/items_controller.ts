@@ -8,8 +8,18 @@ export default class ItemsController {
    */
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
-    const { page = 1, per_page: perPage = 10 } = request.qs()
-    const items = await Item.query().orderBy('created_at', 'desc').paginate(page, perPage)
+
+    const { page = 1, per_page: perPage = 10, q } = request.qs()
+
+    const items = await Item.query()
+      .if(q, (query) =>
+        query
+          .whereLike('sku', `%${q}%`)
+          .orWhereLike('name', `%${q}%`)
+          .orWhereLike('description', `%${q}%`)
+      )
+      .orderBy('created_at', 'desc')
+      .paginate(page, perPage)
 
     return items
   }
@@ -22,7 +32,7 @@ export default class ItemsController {
     const payload = await request.validateUsing(createItemValidator)
     await Item.create(payload)
 
-    response.safeStatus(201).send('Item created successfully')
+    response.safeStatus(201).send({ message: 'Item created successfully' })
   }
 
   /**
