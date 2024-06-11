@@ -21,4 +21,4 @@ router
   .prefix('/auth')
 
 router.resource('items', ItemsController).apiOnly()
-router.resource('movements', MovementsController).apiOnly()
+router.shallowResource('items.movements', MovementsController).apiOnly()

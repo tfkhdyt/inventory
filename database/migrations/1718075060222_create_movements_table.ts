@@ -9,8 +9,8 @@ export default class extends BaseSchema {
       table.integer('item_id').unsigned().references('id').inTable('items').onDelete('SET NULL')
       table.integer('user_id').unsigned().references('id').inTable('users').onDelete('SET NULL')
       table.datetime('move_date').notNullable()
-      table.enum('direction', ['IN', 'OUT', 'TAKE']).notNullable()
-      table.integer('quantity').notNullable().defaultTo(0)
+      table.enum('direction', ['IN', 'OUT']).notNullable()
+      table.integer('quantity').unsigned().notNullable().defaultTo(0)
       table.text('note')
 
       table.timestamp('created_at')
