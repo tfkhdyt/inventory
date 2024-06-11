@@ -23,5 +23,6 @@ router
   .group(() => {
     router.get('/', [ItemsController, 'index'])
     router.post('/', [ItemsController, 'store'])
+    router.get('/:sku', [ItemsController, 'show'])
   })
   .prefix('/items')

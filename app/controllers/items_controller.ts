@@ -38,7 +38,12 @@ export default class ItemsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) {
+    const { sku } = params
+    const item = await Item.findByOrFail('sku', sku)
+
+    return item
+  }
 
   /**
    * Handle form submission for the edit action
