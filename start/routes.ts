@@ -9,6 +9,7 @@
 
 const UsersController = () => import('#controllers/users_controller')
 const ItemsController = () => import('#controllers/items_controller')
+const MovementsController = () => import('#controllers/movements_controller')
 import router from '@adonisjs/core/services/router'
 
 router
@@ -19,12 +20,5 @@ router
   })
   .prefix('/auth')
 
-router
-  .group(() => {
-    router.get('/', [ItemsController, 'index'])
-    router.post('/', [ItemsController, 'store'])
-    router.get('/:id', [ItemsController, 'show'])
-    router.put('/:id', [ItemsController, 'update'])
-    router.delete('/:id', [ItemsController, 'destroy'])
-  })
-  .prefix('/items')
+router.resource('items', ItemsController).apiOnly()
+router.resource('movements', MovementsController).apiOnly()
