@@ -1,5 +1,5 @@
 import Item from '#models/item'
-import { createItemValidator } from '#validators/item'
+import { createItemValidator, updateItemValidator } from '#validators/item'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ItemsController {
@@ -8,7 +8,6 @@ export default class ItemsController {
    */
   async index({ auth, request }: HttpContext) {
     await auth.authenticate()
-
     const { page = 1, per_page: perPage = 10, q } = request.qs()
 
     const items = await Item.query()
@@ -30,6 +29,7 @@ export default class ItemsController {
   async store({ auth, request, response }: HttpContext) {
     await auth.authenticate()
     const payload = await request.validateUsing(createItemValidator)
+
     await Item.create(payload)
 
     response.safeStatus(201).send({ message: 'Item created successfully' })
@@ -39,8 +39,9 @@ export default class ItemsController {
    * Show individual record
    */
   async show({ params }: HttpContext) {
-    const { sku } = params
-    const item = await Item.findByOrFail('sku', sku)
+    const { id } = params
+
+    const item = await Item.findOrFail(id)
 
     return item
   }
@@ -48,7 +49,17 @@ export default class ItemsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request }: HttpContext) {
+    const { id } = params
+
+    const item = await Item.findOrFail(id)
+    const payload = await request.validateUsing(updateItemValidator, {
+      meta: { itemId: item.id },
+    })
+    await item.merge(payload).save()
+
+    return { message: 'Item updated successfully' }
+  }
 
   /**
    * Delete record

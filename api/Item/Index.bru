@@ -5,12 +5,12 @@ meta {
 }
 
 get {
-  url: http://localhost:3333/items?per_page=2
+  url: http://localhost:3333/items
   body: none
   auth: inherit
 }
 
 query {
-  per_page: 2
+  ~per_page: 2
   ~q: TEMBAKAN
 }

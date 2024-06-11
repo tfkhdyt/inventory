@@ -25,4 +25,23 @@ export const createItemValidator = vine.compile(
  * Validator to validate the payload when updating
  * an existing item.
  */
-export const updateItemValidator = vine.compile(vine.object({}))
+export const updateItemValidator = vine.withMetaData<{ itemId: number }>().compile(
+  vine.object({
+    sku: vine
+      .string()
+      .trim()
+      .unique(async (_, value, field) => {
+        const item = await Item.query()
+          .whereNot('id', field.meta.itemId)
+          .where('sku', value)
+          .first()
+
+        return !item
+      })
+      .optional(),
+    name: vine.string().trim().maxLength(100).optional(),
+    description: vine.string().trim().nullable().optional(),
+    unit: vine.string().trim().optional(),
+    quantity: vine.number().min(0).optional(),
+  })
+)

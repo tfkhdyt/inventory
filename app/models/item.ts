@@ -5,7 +5,7 @@ export default class Item extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column({ isPrimary: true })
+  @column()
   declare sku: string
 
   @column()
