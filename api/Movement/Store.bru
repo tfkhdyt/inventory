@@ -1,0 +1,20 @@
+meta {
+  name: Store
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3333/items/1/movements
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "moveDate": "2024-06-11 15:34:00",
+    "direction": "OUT",
+    "quantity": 2,
+    "note": null
+  }
+}
