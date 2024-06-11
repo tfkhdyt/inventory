@@ -38,7 +38,8 @@ export default class ItemsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {
+  async show({ auth, params }: HttpContext) {
+    await auth.authenticate()
     const { id } = params
 
     const item = await Item.findOrFail(id)
@@ -49,7 +50,8 @@ export default class ItemsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {
+  async update({ auth, params, request }: HttpContext) {
+    await auth.authenticate()
     const { id } = params
 
     const item = await Item.findOrFail(id)
@@ -64,5 +66,13 @@ export default class ItemsController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ auth, params }: HttpContext) {
+    await auth.authenticate()
+    const { id } = params
+
+    const item = await Item.findOrFail(id)
+    await item.delete()
+
+    return { message: 'Item deleted successfully' }
+  }
 }

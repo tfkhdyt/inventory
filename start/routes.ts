@@ -25,5 +25,6 @@ router
     router.post('/', [ItemsController, 'store'])
     router.get('/:id', [ItemsController, 'show'])
     router.put('/:id', [ItemsController, 'update'])
+    router.delete('/:id', [ItemsController, 'destroy'])
   })
   .prefix('/items')
