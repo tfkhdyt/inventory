@@ -9,7 +9,6 @@ export default class MovementsController {
    * Display a list of resource
    */
   async index({ auth, request }: HttpContext) {
-    const user = await auth.authenticate()
     const { page = 1, per_page: perPage = 10, direction, from, to } = request.qs()
     const itemId = request.param('item_id')
 
@@ -18,7 +17,7 @@ export default class MovementsController {
       .preload('createdBy')
       .if(direction, (query) => query.where('direction', direction))
       .if(from && to, (query) => query.whereBetween('move_date', [from, to]))
-      .if(user.role === 'STAFF', (query) => query.where('user_id', user.id))
+      .if(auth.user!.role === 'STAFF', (query) => query.where('user_id', auth.user!.id))
       .where('item_id', itemId)
       .orderBy('created_at', 'desc')
       .paginate(page, perPage)
@@ -30,12 +29,11 @@ export default class MovementsController {
    * Handle form submission for the create action
    */
   async store({ auth, request, response }: HttpContext) {
-    const user = await auth.authenticate()
     const payload = await request.validateUsing(createMovementValidator)
     const itemId = request.param('item_id')
 
     await db.transaction(async (trx) => {
-      await Movement.create({ ...payload, userId: user.id, itemId }, { client: trx })
+      await Movement.create({ ...payload, userId: auth.user!.id, itemId }, { client: trx })
       const item = await Item.findOrFail(itemId, { client: trx })
 
       switch (payload.direction) {
@@ -56,8 +54,7 @@ export default class MovementsController {
   /**
    * Show individual record
    */
-  async show({ auth, bouncer, params }: HttpContext) {
-    await auth.authenticate()
+  async show({ bouncer, params }: HttpContext) {
     const { id } = params
 
     const movement = await Movement.findOrFail(id)
@@ -69,8 +66,7 @@ export default class MovementsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ auth, bouncer, params, request }: HttpContext) {
-    await auth.authenticate()
+  async update({ bouncer, params, request }: HttpContext) {
     const { id } = params
     const payload = await request.validateUsing(updateMovementValidator)
 

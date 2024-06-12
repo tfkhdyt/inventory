@@ -6,8 +6,7 @@ export default class ItemsController {
   /**
    * Display a list of resource
    */
-  async index({ auth, request }: HttpContext) {
-    await auth.authenticate()
+  async index({ request }: HttpContext) {
     const { page = 1, per_page: perPage = 10, q } = request.qs()
 
     const items = await Item.query()
@@ -26,8 +25,7 @@ export default class ItemsController {
   /**
    * Handle form submission for the create action
    */
-  async store({ auth, request, response }: HttpContext) {
-    await auth.authenticate()
+  async store({ request, response }: HttpContext) {
     const payload = await request.validateUsing(createItemValidator)
 
     await Item.create(payload)
@@ -38,8 +36,7 @@ export default class ItemsController {
   /**
    * Show individual record
    */
-  async show({ auth, params }: HttpContext) {
-    await auth.authenticate()
+  async show({ params }: HttpContext) {
     const { id } = params
 
     const item = await Item.findOrFail(id)
@@ -50,8 +47,7 @@ export default class ItemsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ auth, params, request }: HttpContext) {
-    await auth.authenticate()
+  async update({ params, request }: HttpContext) {
     const { id } = params
 
     const item = await Item.findOrFail(id)
@@ -66,8 +62,7 @@ export default class ItemsController {
   /**
    * Delete record
    */
-  async destroy({ auth, params }: HttpContext) {
-    await auth.authenticate()
+  async destroy({ params }: HttpContext) {
     const { id } = params
 
     const item = await Item.findOrFail(id)

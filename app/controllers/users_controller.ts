@@ -21,8 +21,6 @@ export default class UsersController {
   }
 
   async inspect({ auth }: HttpContext) {
-    const user = await auth.authenticate()
-
-    return user
+    return auth.getUserOrFail()
   }
 }
