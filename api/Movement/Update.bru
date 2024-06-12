@@ -1,0 +1,18 @@
+meta {
+  name: Update
+  type: http
+  seq: 4
+}
+
+put {
+  url: http://localhost:3333/movements/4
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "moveDate": "2024-06-12T08:28:00.000+00:00",
+    "note": "aku lupa hehe"
+  }
+}

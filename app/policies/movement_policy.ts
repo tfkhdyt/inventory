@@ -1,6 +1,6 @@
 import User from '#models/user'
 import Movement from '#models/movement'
-import { BasePolicy } from '@adonisjs/bouncer'
+import { AuthorizationResponse, BasePolicy } from '@adonisjs/bouncer'
 import { AuthorizerResponse } from '@adonisjs/bouncer/types'
 
 export default class MovementPolicy extends BasePolicy {
@@ -9,6 +9,14 @@ export default class MovementPolicy extends BasePolicy {
   }
 
   show(user: User, movement: Movement): AuthorizerResponse {
-    return user.id === movement.userId
+    if (user.id === movement.userId) return true
+
+    return AuthorizationResponse.deny('You are not authorized to view this data')
+  }
+
+  update(user: User, movement: Movement): AuthorizerResponse {
+    if (user.id === movement.userId) return true
+
+    return AuthorizationResponse.deny('You are not authorized to update this data')
   }
 }

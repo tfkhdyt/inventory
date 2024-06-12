@@ -1,6 +1,6 @@
 import Item from '#models/item'
 import Movement from '#models/movement'
-import { createMovementValidator } from '#validators/movement'
+import { createMovementValidator, updateMovementValidator } from '#validators/movement'
 import type { HttpContext } from '@adonisjs/core/http'
 import db from '@adonisjs/lucid/services/db'
 
@@ -50,20 +50,18 @@ export default class MovementsController {
       await item.save()
     })
 
-    response.safeStatus(201).send({ message: 'Movement created successfully' })
+    response.safeStatus(201).send({ message: 'Movement added successfully' })
   }
 
   /**
    * Show individual record
    */
-  async show({ auth, bouncer, params, response }: HttpContext) {
+  async show({ auth, bouncer, params }: HttpContext) {
     await auth.authenticate()
     const { id } = params
 
     const movement = await Movement.findOrFail(id)
-    if (await bouncer.with('MovementPolicy').denies('show', movement)) {
-      return response.forbidden({ message: 'You are not authorized to view this data' })
-    }
+    await bouncer.with('MovementPolicy').authorize('show', movement)
 
     return movement
   }
@@ -71,7 +69,17 @@ export default class MovementsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ auth, bouncer, params, request }: HttpContext) {
+    await auth.authenticate()
+    const { id } = params
+    const payload = await request.validateUsing(updateMovementValidator)
+
+    const movement = await Movement.findOrFail(id)
+    await bouncer.with('MovementPolicy').authorize('update', movement)
+    await movement.merge(payload).save()
+
+    return { message: 'Movement updated successfully' }
+  }
 
   /**
    * Delete record
