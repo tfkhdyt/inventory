@@ -19,4 +19,10 @@ export default class MovementPolicy extends BasePolicy {
 
     return AuthorizationResponse.deny('You are not authorized to update this data')
   }
+
+  destroy(user: User, movement: Movement): AuthorizerResponse {
+    if (user.id === movement.userId) return true
+
+    return AuthorizationResponse.deny('You are not authorized to delete this data')
+  }
 }

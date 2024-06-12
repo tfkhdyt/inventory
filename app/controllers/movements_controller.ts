@@ -80,5 +80,13 @@ export default class MovementsController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ bouncer, params }: HttpContext) {
+    const { id } = params
+
+    const movement = await Movement.findOrFail(id)
+    await bouncer.with('MovementPolicy').authorize('destroy', movement)
+    await movement.delete()
+
+    return { message: 'Movement deleted successfully' }
+  }
 }
