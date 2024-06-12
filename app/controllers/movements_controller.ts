@@ -56,7 +56,17 @@ export default class MovementsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ auth, bouncer, params, response }: HttpContext) {
+    await auth.authenticate()
+    const { id } = params
+
+    const movement = await Movement.findOrFail(id)
+    if (await bouncer.with('MovementPolicy').denies('show', movement)) {
+      return response.forbidden({ message: 'You are not authorized to view this data' })
+    }
+
+    return movement
+  }
 
   /**
    * Handle form submission for the edit action

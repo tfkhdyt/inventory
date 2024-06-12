@@ -12,4 +12,6 @@
 |
 */
 
-export const policies = {}
+export const policies = {
+  MovementPolicy: () => import('#policies/movement_policy'),
+}
