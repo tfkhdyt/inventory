@@ -1,0 +1,15 @@
+meta {
+  name: Index
+  type: http
+  seq: 1
+}
+
+get {
+  url: http://localhost:3333/suppliers
+  body: none
+  auth: inherit
+}
+
+query {
+  ~q: maling
+}
