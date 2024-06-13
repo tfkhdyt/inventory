@@ -1,5 +1,5 @@
 import Supplier from '#models/supplier'
-import { createSupplierValidator } from '#validators/supplier'
+import { createSupplierValidator, updateSupplierValidator } from '#validators/supplier'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SuppliersController {
@@ -37,12 +37,28 @@ export default class SuppliersController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) {
+    const { id } = params
+
+    const supplier = await Supplier.findOrFail(id)
+
+    return supplier
+  }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request }: HttpContext) {
+    const { id } = params
+
+    const supplier = await Supplier.findOrFail(id)
+    const payload = await request.validateUsing(updateSupplierValidator, {
+      meta: { supplierId: supplier.id },
+    })
+    await supplier.merge(payload).save()
+
+    return { message: 'Supplier updated successfully' }
+  }
 
   /**
    * Delete record
