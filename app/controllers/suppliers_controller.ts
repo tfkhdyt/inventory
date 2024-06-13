@@ -63,5 +63,12 @@ export default class SuppliersController {
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params }: HttpContext) {
+    const { id } = params
+
+    const supplier = await Supplier.findOrFail(id)
+    await supplier.delete()
+
+    return { message: 'Supplier deleted successfully' }
+  }
 }
