@@ -1,0 +1,17 @@
+meta {
+  name: Store
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3333/suppliers/2/items
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "itemId": 1
+  }
+}
