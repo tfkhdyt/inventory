@@ -1,6 +1,6 @@
 import Item from '#models/item'
 import Supplier from '#models/supplier'
-import { createItemSupplierValidator } from '#validators/item_supplier'
+import { createItemSupplierValidator, updateItemSupplierValidator } from '#validators/item_supplier'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SupplierItemsController {
@@ -46,10 +46,26 @@ export default class SupplierItemsController {
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) {}
+  async update({ params, request }: HttpContext) {
+    const { supplier_id: supplierId, id } = params
+    const payload = await request.validateUsing(updateItemSupplierValidator)
+
+    const supplier = await Supplier.findOrFail(supplierId)
+    await supplier.related('items').detach([id])
+    await supplier.related('items').attach([payload.itemId])
+
+    return { message: 'Supplier Item updated successfully' }
+  }
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) {}
+  async destroy({ params }: HttpContext) {
+    const { supplier_id: supplierId, id } = params
+
+    const supplier = await Supplier.findOrFail(supplierId)
+    await supplier.related('items').detach([id])
+
+    return { message: 'Supplier Item deleted successfully' }
+  }
 }

@@ -8,6 +8,6 @@ export const createItemSupplierValidator = vine.compile(
 
 export const updateItemSupplierValidator = vine.compile(
   vine.object({
-    item_id: vine.number().min(0),
+    itemId: vine.number().min(0),
   })
 )
