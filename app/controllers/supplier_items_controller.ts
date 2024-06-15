@@ -34,7 +34,14 @@ export default class SupplierItemsController {
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) {}
+  async show({ params }: HttpContext) {
+    const { supplier_id: supplierId, id } = params
+
+    const supplier = await Supplier.findOrFail(supplierId)
+    const item = await supplier.related('items').query().where('items.id', id).firstOrFail()
+
+    return item
+  }
 
   /**
    * Handle form submission for the edit action
