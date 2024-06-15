@@ -13,6 +13,7 @@ const MovementsController = () => import('#controllers/movements_controller')
 const SuppliersController = () => import('#controllers/suppliers_controller')
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
+const SupplierItemsController = () => import('#controllers/supplier_items_controller')
 
 router
   .group(() => {
@@ -27,5 +28,6 @@ router
     router.resource('items', ItemsController).apiOnly()
     router.shallowResource('items.movements', MovementsController).apiOnly()
     router.resource('suppliers', SuppliersController).apiOnly()
+    router.resource('suppliers.items', SupplierItemsController).apiOnly()
   })
   .use(middleware.auth({ guards: ['api'] }))
